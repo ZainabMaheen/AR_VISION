@@ -5,7 +5,25 @@
  */
 import { useAuthStore } from '../features/auth/store'
 
-export const API_URL = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000/api').replace(/\/+$/, '')
+/**
+ * API base URL from VITE_API_URL: .env for `npm run dev`, .env.production for builds.
+ * Accepts the backend address with or without "/api" (all routes live under /api).
+ */
+function resolveApiUrl(raw: string | undefined): string {
+  const value = (raw || 'http://127.0.0.1:5000/api').trim().replace(/\/+$/, '')
+  try {
+    return new URL(value).pathname === '/' ? `${value}/api` : value
+  } catch {
+    return value
+  }
+}
+
+export const API_URL = resolveApiUrl(import.meta.env.VITE_API_URL)
+
+// A deployed site cannot call a backend on the visitor's own computer: make the mistake visible
+if (import.meta.env.PROD && /\/\/(localhost|127\.0\.0\.1)(:|\/|$)/.test(API_URL)) {
+  console.error(`[AR Vision] VITE_API_URL points at ${API_URL}. Set it to the deployed backend before building.`)
+}
 
 const API_ORIGIN = (() => {
   try {

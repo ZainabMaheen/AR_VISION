@@ -28,9 +28,15 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL") or f"sqlite:///{(BASE_DIR / 'instance' / 'ar_vision.db').as_posix()}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    # Frontend addresses allowed to call the API: local dev + the deployed frontend.
+    # CORS_ORIGINS (comma separated) replaces this list. Trailing slashes are ignored,
+    # because the browser's Origin header never has one.
     CORS_ORIGINS = [
-        o.strip()
-        for o in (os.getenv("CORS_ORIGINS") or "http://localhost:5173,http://127.0.0.1:5173").split(",")
+        o.strip().rstrip("/")
+        for o in (
+            os.getenv("CORS_ORIGINS")
+            or "http://localhost:5173,http://127.0.0.1:5173,https://ar-vision-1.onrender.com"
+        ).split(",")
         if o.strip()
     ]
 
