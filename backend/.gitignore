@@ -1,0 +1,20 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+logs/
+storage/uploads/*
+!storage/uploads/**/.gitkeep
+.pytest_cache/
+.idea/
+.vscode/
+
+# Flask + SQLite
+instance/
+*.db
+# uploaded images are ignored; the empty folders are kept via .gitkeep
+uploads/*
+!uploads/*/
+uploads/*/*
+!uploads/*/.gitkeep
